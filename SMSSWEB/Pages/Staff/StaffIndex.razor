@@ -1,0 +1,72 @@
+﻿@page "/staffindex"
+@using SMSSModels;
+@inherits StaffIndexBase
+
+@if (allStaffs == null)
+{
+    <MudProgressCircular Color="Color.Primary" Class="spinner" Indeterminate="true" />
+}
+else
+{
+    <MudPaper Class="pa-8 ma-1" Elevation="3">
+        <div class="d-flex justify-content-between rounded" style="background-color:#0d7d97;height:50px;top:1px;">
+            <MudText class="align-self-center" Typo="Typo.h6" Style="color:white"> &nbsp; All Staff</MudText>
+
+            <MudFab Size="Size.Small" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenAddNew" Style="margin-right:10px;top:5px;" />
+        </div>
+
+        <MudTable Items="@allStaffs" Hover="true" Striped="true" @bind-SelectedItem="selectedStaff" FixedHeader="true" FixedFooter="true">
+
+            <HeaderContent>
+                <MudTh>Staff Id</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Position</MudTh>
+                <MudTh>Joined Date</MudTh>
+                <MudTh>Action</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Staff Id"> @context.StaffId </MudTd>
+                <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
+                <MudTd DataLabel="Email">@context.EmailId</MudTd>
+                <MudTd DataLabel="Position">@Enum.GetName(typeof (Enums.StaffType), @context.StaffType)</MudTd>
+                <MudTd DataLabel="Joined Date">@context.DateOfJoining.Value.ToShortDateString()</MudTd>
+                <MudTd>
+                    <MudFab @onclick="@(()=>EditStaff(context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Class="cursor-pointer" Title="Edit" />
+                    <MudFab @onclick="@(()=>OpenDeleteStaff(context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Class="cursor-pointer" Title="Delete" />
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+        <MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+            @*   <TitleContent>
+        <MudToolBar style="background-color:#0d7d97;height:50px;border-radius: 5px;">
+        <MudListItem Fixed="false">
+        <MudText Typo="Typo.h6" Style="color:white">Delete</MudText>
+        </MudListItem>
+        </MudToolBar>
+        </TitleContent>*@
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Do you really want to delete?
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <MudTextField Label="Staff Id" Value="@staffForDel.StaffId" ReadOnly="true" />
+                <MudTextField Label="Name" Value="@(staffForDel.FirstName + staffForDel.LastName)" ReadOnly="true" />
+                <MudTextField Label="Email" Value="@staffForDel.EmailId" ReadOnly="true" />
+                <MudTextField Label="Position" Value="@Enum.GetName(typeof (Enums.StaffType), @staffForDel.StaffType)" ReadOnly="true" />
+                <MudTextField Label="Phone Number" Value="@staffForDel.PhoneNumber" ReadOnly="true" />
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="Cancel" Class="px-10">Cancel</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Secondary" Variant="Variant.Filled" OnClick="DeleteStaffConfirm" Class="px-10">Delete</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </MudPaper>
+
+}

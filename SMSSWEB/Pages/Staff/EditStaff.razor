@@ -1,0 +1,142 @@
+﻿@page "/editstaff/{id}"
+@using SMSSModels;
+@inject MudBlazor.ISnackbar SnackBar
+@inherits EditStaffBase
+
+@if (staffDetails == null)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <MudPaper Class="pa-8 ma-1" Elevation="3">
+
+        <MudToolBar style="background-color:#0d7d97;height:50px;border-radius: 5px;">
+            <MudListItem Fixed="false">
+                <MudText Typo="Typo.h6" Style="color:white">Edit Staff</MudText>
+            </MudListItem>
+        </MudToolBar>
+
+        <EditForm Model="@staffDetails" OnValidSubmit="UpdateStaff">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem Spacing="0" xs="12" sm="6">
+
+                    <MudTextField Label="First Name" HelperText="Min. 3 characters" @bind-Value="staffDetails.FirstName" For="@(() => staffDetails.FirstName)" />
+
+                    <MudTextField Label="Phone Number" HelperText="Max. 10 characters" @bind-Value="staffDetails.PhoneNumber" For="@(() => staffDetails.PhoneNumber)" />
+
+                    <MudTextField Label="Email" Class="mt-3" @bind-Value="staffDetails.EmailId" For="@(() => staffDetails.EmailId)" />
+
+                    <MudSelect T="int" Label="Gender" HelperText="Select Gender" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="staffDetails.Gender">
+                        @foreach (int item in Enum.GetValues(typeof(Enums.Gender)))
+                        {
+                            <MudSelectItem Value="@item">@Enum.GetName(typeof (Enums.Gender), item)</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudDatePicker Label="Date Of Birth" HelperText="MM-dd-yyyy" Editable="true" @bind-Date="staffDetails.DateOfBirth" Placeholder="Select Date" />
+
+
+                </MudItem>
+
+                <MudItem Spacing="0" xs="12" sm="6">
+                    <MudTextField Label="Last Name" HelperText="Min. 1 characters" @bind-Value="staffDetails.LastName" For="@(() => staffDetails.LastName)" />
+
+                    <MudTextField Label="Secondary Number" HelperText="Max. 10 characters" @bind-Value="staffDetails.AltPhoneNumber" For="@(() => staffDetails.AltPhoneNumber)" />
+
+                    <MudTextField Label="Qualification" Class="mt-3" @bind-Value="staffDetails.Qualification" For="@(() => staffDetails.Qualification)" />
+
+                    <MudSelect T="int" Label="Staff Type" HelperText="Select Staff Type" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="staffDetails.StaffType">
+                        @foreach (int item in Enum.GetValues(typeof(Enums.StaffType)))
+                        {
+                            <MudSelectItem Value="@item">@Enum.GetName(typeof (Enums.StaffType), item)</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudDatePicker Label="Date Of Joining" HelperText="MM-dd-yyyy" Editable="true" @bind-Date="staffDetails.DateOfJoining" Placeholder="Select Date" />
+
+                </MudItem>
+                <MudItem Spacing="0" xs="12" sm="6">
+                    <InputFile id="fileInput" hidden OnChange="UploadFiles" />
+                    <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Filled.CloudUpload"
+                           for="fileInput">
+                        Upload Photo
+                    </MudButton>
+                    <SelectedTemplate>
+                        @if (files != null)
+                        {
+                            <MudText>@files.Name</MudText>
+                        }
+                        else
+                        {
+                            <MudText>No File</MudText>
+                        }
+                    </SelectedTemplate>
+                </MudItem>
+
+                <MudItem Spacing="0" xs="12" sm="12">
+                    <MudTextField Label="Present Address" HelperText="Address line" @bind-Value="staffDetails.PresentAddress" For="@(() => staffDetails.PresentAddress)" />
+
+                </MudItem>
+                <MudItem Spacing="0" xs="6" sm="3">
+                    <MudTextField Label="City(30)" HelperText="City(30)" @bind-Value="staffDetails.PresentCity" For="@(() => staffDetails.PresentCity)" />
+                </MudItem>
+                <MudItem Spacing="0" xs="6" sm="3">
+                    <MudTextField Label="District(30)" HelperText="District" @bind-Value="staffDetails.PresentDistrict" For="@(() => staffDetails.PresentDistrict)" />
+                </MudItem>
+                <MudItem Spacing="0" xs="6" sm="3">
+                    <MudTextField Label="PincCode(6)" HelperText="PincCode" @bind-Value="staffDetails.PresentPinCode" For="@(() => staffDetails.PresentPinCode)" />
+                </MudItem>
+                <MudItem Spacing="0" xs="6" sm="3">
+                    <MudSelect T="int" Label="State" HelperText="Select State" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="staffDetails.PresentState">
+                        @if (states != null)
+                        {
+                            foreach (var item in states)
+                            {
+                                <MudSelectItem Value="@item.StateId">@item.StateName</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+
+                </MudItem>
+                <MudItem xs="12" sm="12">
+                    <MudCheckBox Label="Permanent Addres Same as current address" @bind-Checked="@isPermAddressChecked" Color="Color.Info"></MudCheckBox>
+                </MudItem>
+                @if (!isPermAddressChecked)
+                {
+                    <MudItem Spacing="0" xs="12" sm="12">
+                        <MudTextField Label="Permnent Address" HelperText="Address line" @bind-Value="staffDetails.PermnentAddress" For="@(() => staffDetails.PermnentAddress)" />
+                    </MudItem>
+                    <MudItem Spacing="0" xs="6" sm="3">
+                        <MudTextField Label="City(30)" HelperText="City(30)" @bind-Value="staffDetails.PermnentCity" For="@(() => staffDetails.PermnentCity)" />
+                    </MudItem>
+                    <MudItem Spacing="0" xs="6" sm="3">
+                        <MudTextField Label="District(30)" HelperText="District(30)" @bind-Value="staffDetails.PermnentDistrict" For="@(() => staffDetails.PermnentDistrict)" />
+                    </MudItem>
+                    <MudItem Spacing="0" xs="6" sm="3">
+                        <MudTextField Label="PincCode(6)" HelperText="PincCode(6)" @bind-Value="staffDetails.PermnentPinCode" For="@(() => staffDetails.PermnentPinCode)" />
+                    </MudItem>
+                    <MudItem Spacing="0" xs="6" sm="3">
+                        <MudSelect T="int" Label="State" HelperText="Select State" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="staffDetails.PermnentState">
+                            @if (states != null)
+                            {
+                                foreach (var item in states)
+                                {
+                                    <MudSelectItem Value="@item.StateId">@item.StateName</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="Cancel" Class="ml-auto">Cancel</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+}

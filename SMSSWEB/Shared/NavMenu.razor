@@ -1,0 +1,24 @@
+﻿
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All"Icon="@Icons.Filled.Dashboard" IconColor="Color.Inherit">Dashboard</MudNavLink>
+    <MudNavLink Href="/counter" Match="NavLinkMatch.Prefix">counter</MudNavLink>
+    <MudNavGroup Title="Administration" Expanded="true">
+        <MudNavLink Href="/fetchdata" Match="NavLinkMatch.Prefix">fetchdata</MudNavLink>
+        <MudNavLink Href="/staffindex" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.People" IconColor="Color.Inherit">Add/Update Staff</MudNavLink>
+        <MudNavLink Href="/studentIndex" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.People" IconColor="Color.Inherit">Add/Update Student</MudNavLink>
+        <MudNavLink Href="/classIndex" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.People" IconColor="Color.Inherit">Add/Update Class</MudNavLink>
+    </MudNavGroup>
+    <MudNavLink Href="/about"  Match="NavLinkMatch.Prefix">About</MudNavLink>
+</MudNavMenu>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

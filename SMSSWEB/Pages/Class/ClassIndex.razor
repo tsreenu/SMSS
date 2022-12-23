@@ -1,0 +1,194 @@
+﻿@page "/classindex"
+@using SMSSModels;
+@inherits ClassIndexBase
+
+
+@if (allClass == null)
+{
+    <MudProgressCircular Color="Color.Primary" Class="spinner" Indeterminate="true" />
+}
+else
+{
+    <MudPaper Class="pa-8 ma-1" Elevation="3">
+        <div class="d-flex justify-content-between rounded" style="background-color:#0d7d97;height:50px;">
+            <MudText class="align-self-center" Typo="Typo.h6" Style="color:white"> &nbsp; Classes</MudText>
+
+            <MudFab Color="Color.Warning" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenAddDialog" Style="margin-right:8px;top:5px;" />
+        </div>
+        <MudExpansionPanels>
+            @foreach (var classDetails in allClass)
+            {
+                <MudExpansionPanel Typo="Typo.h6" Text="@classDetails.ClassName" style="font-style:" MaxHeight="150" HideIcon="true">
+                    <TitleContent>
+                        <div class="d-flex">
+                            <MudIcon Icon="@Icons.Filled.ExpandMore"> </MudIcon>
+                            <MudText Class="mt-1"><strong>@classDetails.ClassName</strong></MudText>
+                            <div class="ml-auto">
+                            <MudIcon Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" @onclick="@(()=>OpenEditClassDialog(@classDetails))" Class="ml-auto cursor-pointer" Title="Edit" />
+                                <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Style="margin-left:10px !important" Class="ml-auto cursor-pointer" Title="Delete" />
+                            </div>
+                        </div>
+                    </TitleContent>
+                    <ChildContent>
+                        <div class="col-sm-12 col-md-6 d-flex justify-content-between rounded" style="background-color:#ebeeef;margin-bottom:5px;height:50px;">
+                            <MudText class="align-self-center" Typo="Typo.h6"> &nbsp; Sections</MudText>
+                            <MudFab Color="Color.Warning" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" @onclick="@(()=>OpenAddSectionDialog(classDetails.Id))" Style="margin-right:8px;top:5px;" />
+                        </div>
+                        <div class="col-sm-12 col-md-6 rounded">
+                            <MudSimpleTable Style="overflow-x: auto;">
+                                @foreach (var sections in classDetails.SectionDetails.ToList())
+                                {
+                                    <tr style="background-color:#f3f5f6;">
+
+                                        <td>
+                                            <MudTooltip Text="Section name" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                <MudText class="align-self-center" Typo="Typo.h6"> &nbsp; @sections.SectionName </MudText>
+                                            </MudTooltip>
+                                        </td>
+                                        <td>
+                                            <MudTooltip Text="Max strength" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                <MudText class="align-self-center" Typo="Typo.h6"> &nbsp;@sections.MaxStudents </MudText>
+                                            </MudTooltip>
+                                        </td>
+                                        <td>
+
+                                            @if (teachersList.Where(x => x.Id == sections.SectionTeacherId).FirstOrDefault() == null)
+                                            {
+                                                <MudTooltip Text="Edit to assigned teacher" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                    <MudText class="align-self-center" Text="Assigned teacher" Typo="Typo.h6"> Teacher not found </MudText>
+                                                </MudTooltip>
+                                            }
+                                            else
+                                            {
+                                                <MudTooltip Text="Assigned teacher" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                    <MudText class="align-self-center" Typo="Typo.h6"> &nbsp; @(teachersList.Where(x => x.Id == sections.SectionTeacherId).FirstOrDefault()?.FirstName)</MudText>
+                                                    </MudTooltip>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Class="gap-2">
+                                                <MudIcon @onclick="@(()=>OpenEditSecDialog(@sections))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Class="cursor-pointer" Title="Edit" />
+                                                <MudIcon @onclick="@(()=>DeletEditSecDialog(@sections.SectionId))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Class="cursor-pointer" Title="Delete" />
+                                            </MudButtonGroup>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </MudSimpleTable>
+                        </div>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+
+        <MudDialog @bind-IsVisible="addVisible" Options="dialogOptionsAdd">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Create new class
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="@classDetails" OnValidSubmit="AddNewClass">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem sm="12">
+                            <MudTextField Label="Class Name" @bind-Value="classDetails.ClassName" For="@(() => classDetails.ClassName)" />
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="CloseAddDialog" Class="px-10">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="AddNewClass" Variant="Variant.Filled" Class="px-10">Create</MudButton>
+            </DialogActions>
+        </MudDialog>
+        <MudDialog @bind-IsVisible="editClassVisible" Options="dialogOptionsAdd">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Rename Class
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="@classDetails" OnValidSubmit="RenameClass">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem sm="12">
+                            <MudTextField Label="New Class Name" @bind-Value="classDetails.ClassName" For="@(() => classDetails.ClassName)" />
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="CloseEditClassDialog" Class="px-10">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="RenameClass" Variant="Variant.Filled" Class="px-10">Update</MudButton>
+            </DialogActions>
+        </MudDialog>
+        <MudDialog @bind-IsVisible="addSectionVisible" Options="dialogOptionsAdd">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Create new Section
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="@sectionDetails">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem sm="12">
+                            <MudTextField Label="Section Name(50)" @bind-Value="sectionDetails.SectionName" For="@(() => sectionDetails.SectionName)" />
+                            <MudNumericField Label="Section Strength" @bind-Value="sectionDetails.MaxStudents" For="@(() => sectionDetails.MaxStudents)" />
+                            <MudSelect T="int" Label="Section Teacher" HelperText="Select Teacher" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="sectionDetails.SectionTeacherId">
+                                @if (teachersList != null)
+                                {
+                                    foreach (var item in teachersList)
+                                    {
+                                        <MudSelectItem Value="@item.Id">@item.FirstName @item.LastName</MudSelectItem>
+                                    }
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="CloseAddSectionDialog" Class="px-10">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="AddNewSection" Variant="Variant.Filled" Class="px-10">Create</MudButton>
+            </DialogActions>
+        </MudDialog>
+        <MudDialog @bind-IsVisible="editSectionVisible" Options="dialogOptionsAdd">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Update Section
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="@sectionDetails">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem sm="12">
+                            <MudTextField Label="Section Name(50)" @bind-Value="sectionDetails.SectionName" For="@(() => sectionDetails.SectionName)" />
+                            <MudNumericField Label="Section Strength" @bind-Value="sectionDetails.MaxStudents" For="@(() => sectionDetails.MaxStudents)" />
+                            <MudSelect T="int" Label="Section Teacher" HelperText="Select Teacher" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="sectionDetails.SectionTeacherId">
+                                @if (teachersList != null)
+                                {
+                                    foreach (var item in teachersList)
+                                    {
+                                        <MudSelectItem Value="@item.Id">@item.FirstName @item.LastName</MudSelectItem>
+                                    }
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="CloseEditSecDialog" Class="px-10">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="UpdateSection" Variant="Variant.Filled" Class="px-10">Update</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </MudPaper>
+}
