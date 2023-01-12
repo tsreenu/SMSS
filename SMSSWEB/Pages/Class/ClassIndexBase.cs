@@ -35,11 +35,16 @@ namespace SMSSWEB.Pages.Class
         public List<StaffDetails> teachersList { get; set; }
 
         public DialogOptions dialogOptionsAdd = new() { FullWidth = true, MaxWidth = MaxWidth.Small, CloseOnEscapeKey = true, CloseButton = true };
-        public void OpenAddDialog() => addVisible = true;
+        public void OpenAddDialog()
+        {
+            classDetails = new ClassDetails();
+            addVisible = true;
+        }
         public void CloseAddDialog() => addVisible = false;
 
         public void OpenAddSectionDialog(int classId)
         {
+            sectionDetails = new SectionDetails();
             addSectionVisible = true;
             selectedClass = classId;
         }
@@ -90,9 +95,9 @@ namespace SMSSWEB.Pages.Class
         }
         public void OpenEditSecDialog(SectionDetails secDet)
         {
-          sectionDetails = secDet;
-          editSectionVisible = true;
-        } 
+            sectionDetails = secDet;
+            editSectionVisible = true;
+        }
         public void CloseEditSecDialog() => editSectionVisible = false;
 
         public void OpenEditClassDialog(ClassDetails classDet)

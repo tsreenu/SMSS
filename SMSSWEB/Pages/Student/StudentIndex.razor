@@ -1,0 +1,50 @@
+﻿@page "/studentindex"
+@using SMSSModels;
+@inherits StudentIndexBase
+
+@if (allStudents == null)
+{
+    <MudProgressCircular Color="Color.Primary" Class="spinner" Indeterminate="true" />
+}
+else
+{
+    <MudPaper Class="pa-8 ma-1" Elevation="3">
+        <div class="d-flex justify-content-between rounded" style="background-color:#0d7d97;height:50px;top:1px;">
+            <MudText class="align-self-center" Typo="Typo.h6" Style="color:white"> &nbsp; All Staff</MudText>
+
+            <MudFab Size="Size.Small" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenAddNew" Style="margin-right:10px;top:5px;" />
+        </div>
+
+        <MudTable Items="@allStudents" Hover="true" Striped="true" @bind-SelectedItem="selectedStudent" FixedHeader="true" FixedFooter="true">
+
+            <HeaderContent>
+                <MudTh>Admission No</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Class</MudTh>
+                <MudTh>Section</MudTh>
+                <MudTh>Father Name</MudTh>
+                <MudTh>Mobile Number</MudTh>
+                <MudTh>Admission Date</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Admission No"> @context.AdmissionNo </MudTd>
+                <MudTd DataLabel="Name">@context.StudentName</MudTd>
+                <MudTd DataLabel="Class">@context.ClassId</MudTd>
+                <MudTd DataLabel="Class">@context.SectionId</MudTd>
+                <MudTd DataLabel="Father Name">@context.FatherName</MudTd>
+                <MudTd DataLabel="Mobile Number">@context.FatherMobile</MudTd>
+                <MudTd DataLabel="Admission Date">@context.DateOfAdmission.Value.ToShortDateString()</MudTd>
+                <MudTd>
+                    <MudFab @onclick="@(()=>EditStudent(context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Class="cursor-pointer" Title="Edit" />
+                    <MudFab @onclick="@(()=>OpenDeleteStaff(context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Class="cursor-pointer" Title="Delete" />
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+
+    </MudPaper>
+
+}

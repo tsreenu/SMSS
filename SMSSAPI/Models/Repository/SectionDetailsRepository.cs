@@ -14,17 +14,9 @@ namespace SMSSAPI.Models.Repository
         }
         public async Task<SectionDetails> AddSectionDetails(SectionDetails sectionDetails)
         {
-            try
-            {
-                var result = await context.SectionDetails.AddAsync(sectionDetails);
-                await context.SaveChangesAsync();
-                return result.Entity;
-            }
-            catch(Exception ex)
-            {
-
-            }
-            return null;
+            var result = await context.SectionDetails.AddAsync(sectionDetails);
+            await context.SaveChangesAsync();
+            return result.Entity;
         }
 
         public async Task DeleteSectionDetails(int id)
@@ -51,7 +43,7 @@ namespace SMSSAPI.Models.Repository
             {
                 sectionDetails = await context.SectionDetails.Where(x => x.SectionId == id).AsNoTracking().FirstOrDefaultAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }

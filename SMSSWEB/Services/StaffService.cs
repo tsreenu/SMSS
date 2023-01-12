@@ -44,7 +44,6 @@ namespace SMSSWEB.Services
 
             if (res != null)
             {
-
                 staff = await res.Content.ReadFromJsonAsync<StaffDetails>();
             }
             return staff;
@@ -52,12 +51,6 @@ namespace SMSSWEB.Services
         public async Task<bool> DeleteStaff(int Id)
         {
             var res = await httpClient.DeleteAsync($"api/Staff/{Id}");
-
-            //if (res != null)
-            //{
-
-            //    staff = await res.Content.ReadFromJsonAsync<StaffDetails>();
-            //}
             return res.IsSuccessStatusCode;
         }
     }

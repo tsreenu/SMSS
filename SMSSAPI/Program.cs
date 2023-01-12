@@ -33,6 +33,8 @@ internal class Program
         builder.Services.AddScoped<IClassDetailsService, ClassDetailsRepository>();
         builder.Services.AddScoped<ICommonService, CommonRepository>();
         builder.Services.AddScoped<ISectionDetailsService, SectionDetailsRepository>();
+        builder.Services.AddScoped<ISubjectService, SubjectRepository>();
+        builder.Services.AddScoped<IStudentDetailsService, StudentDetailsRepository>();
 
         var app = builder.Build();
 

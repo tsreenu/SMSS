@@ -89,7 +89,7 @@ namespace SMSSAPI.Models.Repository
             {
 
             }
-            return result;
+            return staff;
         }
     }
 }

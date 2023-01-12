@@ -26,6 +26,14 @@ builder.Services.AddHttpClient<IClassService, ClassService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7258/");
 });
+builder.Services.AddHttpClient<ISubjectService, SubjectService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7258/");
+});
+builder.Services.AddHttpClient<IStudentService, StudentService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7258/");
+});
 
 //register Mudblazor
 builder.Services.AddMudServices(config=>

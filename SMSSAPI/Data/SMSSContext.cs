@@ -14,6 +14,7 @@ namespace SMSSAPI.Data
         public DbSet<States> States { get; set; }
         public DbSet<SectionDetails> SectionDetails { get; set; }
         public virtual DbSet<SubjectDetails> SubjectDetails { get; set; }
+        public virtual DbSet<StudentDetails> StudentDetails { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StaffDetails>().ToTable("StaffDetails");
@@ -21,6 +22,7 @@ namespace SMSSAPI.Data
             modelBuilder.Entity<States>().ToTable("States");
             modelBuilder.Entity<SectionDetails>().ToTable("SectionDetails");
             modelBuilder.Entity<SubjectDetails>().ToTable("SubjectDetails");
+            modelBuilder.Entity<StudentDetails>().ToTable("StudentDetails");
 
             modelBuilder.Entity<SectionDetails>(entity =>
             {

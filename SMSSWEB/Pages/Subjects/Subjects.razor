@@ -1,0 +1,141 @@
+﻿@page "/subjectindex"
+@using SMSSModels;
+@inherits SubjectsBase
+
+@if (allClass == null)
+{
+    <MudProgressCircular Color="Color.Primary" Class="spinner" Indeterminate="true" />
+}
+else
+{
+    <MudPaper Class="pa-8 ma-1" Elevation="3">
+        <div class="d-flex justify-content-between rounded" style="background-color:#0d7d97;height:50px;">
+            <MudText class="align-self-center" Typo="Typo.h6" Style="color:white"> &nbsp; Subjects</MudText>
+
+        </div>
+        <MudExpansionPanels>
+            @foreach (var classDetails in allClass)
+            {
+                <MudExpansionPanel Typo="Typo.h6" Text="@classDetails.ClassName" style="font-style:" MaxHeight="150">
+                    <TitleContent>
+                        <div class="d-flex">
+                            <MudText Class="mt-1"><strong>@classDetails.ClassName</strong></MudText>
+                        </div>
+                    </TitleContent>
+                    <ChildContent>
+                        <div class="col-sm-12 col-md-6 d-flex justify-content-between rounded" style="background-color:#ebeeef;margin-bottom:5px;height:50px;">
+                            <MudText class="align-self-center" Typo="Typo.h6"> &nbsp; Subjects</MudText>
+                            <MudFab Color="Color.Warning" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" @onclick="@(()=>OpenAddSubjectDialog(classDetails.Id))" Style="margin-right:8px;top:5px;" />
+                        </div>
+                        <div class="col-sm-12 col-md-6 rounded">
+                            <MudSimpleTable Style="overflow-x: auto;">
+                                @foreach (var subjects in classDetails.SubjectDetails.ToList())
+                                {
+                                    <tr style="background-color:#f3f5f6;">
+
+                                        <td>
+                                            <MudTooltip Text="Subject name" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                <MudText class="align-self-center" Typo="Typo.h6"> &nbsp; @subjects.SubjectName </MudText>
+                                            </MudTooltip>
+                                        </td>
+                                        <td>
+
+                                            @if (teachersList.Where(x => x.Id == subjects.SubjectTeacher).FirstOrDefault() == null)
+                                            {
+                                                <MudTooltip Text="Edit to assigned teacher" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                    <MudText class="align-self-center" Text="Assigned teacher" Typo="Typo.h6"> Teacher not found </MudText>
+                                                </MudTooltip>
+                                            }
+                                            else
+                                            {
+                                                <MudTooltip Text="Assigned teacher" Arrow="true" Placement="Placement.Top" Color="Color.Primary">
+                                                    <MudText class="align-self-center" Typo="Typo.h6"> &nbsp; @(teachersList.Where(x => x.Id == subjects.SubjectTeacher).FirstOrDefault()?.FirstName)</MudText>
+                                                    </MudTooltip>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Class="gap-2">
+                                                <MudIcon @onclick="@(()=>OpenEditSubjectDialog(@subjects))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Class="cursor-pointer" Title="Edit" />
+                                                <MudIcon @onclick="@(()=>DeletSubjectDialog(@subjects.SubjectId))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Class="cursor-pointer" Title="Delete" />
+                                            </MudButtonGroup>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </MudSimpleTable>
+                        </div>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+
+        <MudDialog @bind-IsVisible="addVisible" Options="dialogOptionsAdd">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Add new subject
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="@subjectDetails" OnValidSubmit="AddNewSubject">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem sm="12">
+                            <MudTextField Label="Subject Name" @bind-Value="subjectDetails.SubjectName" For="@(() => subjectDetails.SubjectName)" />
+                            <MudSelect T="int" Label="Subject Teacher" HelperText="Select Teacher" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="subjectDetails.SubjectTeacher">
+                                @if (teachersList != null)
+                                {
+                                    foreach (var item in teachersList)
+                                    {
+                                        <MudSelectItem Value="@item.Id">@item.FirstName @item.LastName</MudSelectItem>
+                                    }
+                                }
+                            </MudSelect>
+                            <MudHidden></MudHidden>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="CloseAddDialog" Class="px-10">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="AddNewSubject" Variant="Variant.Filled" Class="px-10">Create</MudButton>
+            </DialogActions>
+        </MudDialog>
+
+        <MudDialog @bind-IsVisible="editSubjectVisible" Options="dialogOptionsAdd">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    Update Subject
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="@subjectDetails">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem sm="12">
+                            <MudTextField Label="Section Name(50)" @bind-Value="subjectDetails.SubjectName" For="@(() => subjectDetails.SubjectName)" />
+                            <MudSelect T="int" Label="Subject Teacher" HelperText="Select Teacher" AnchorOrigin="Origin.BottomCenter" Placeholder="Please Select" @bind-Value="subjectDetails.SubjectTeacher">
+                                @if (teachersList != null)
+                                {
+                                    foreach (var item in teachersList)
+                                    {
+                                        <MudSelectItem Value="@item.Id">@item.FirstName @item.LastName</MudSelectItem>
+                                    }
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Outlined" OnClick="CloseEditSubjectDialog" Class="px-10">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="UpdateSubject" Variant="Variant.Filled" Class="px-10">Update</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </MudPaper>
+}
+
+
+

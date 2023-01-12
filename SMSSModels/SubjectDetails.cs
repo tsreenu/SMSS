@@ -10,7 +10,7 @@ namespace SMSSModels
     {
         public int SubjectId { get; set; }
         public string SubjectName { get; set; } = null!;
-        public int? SubjectTeacher { get; set; }
+        public int SubjectTeacher { get; set; }
         public int? ClassId { get; set; }
         public bool IsActive { get; set; }
 
